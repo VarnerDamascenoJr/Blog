@@ -11,5 +11,8 @@ router.get('/posts',(req, res)=>{
 router.get('/categorias',(req, res)=>{
   res.get("Ola caralhinhi")
 })
+router.get('/categorias/add', (req, res)=>{
+  res.render('addcategoria')
+}
 
 module.exports = router;
