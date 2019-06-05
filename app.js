@@ -3,7 +3,7 @@ const express    = require('express');
 const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
 const admin      = require('./routes/admin'); //Aqui eu estou importanto
-//const mongoose   = require('mongoose');
+const mongoose   = require('mongoose');
 const path       = require('path');
 
 const app = express();
@@ -15,6 +15,13 @@ const app = express();
   //configurar o handlebars
     app.engine('handlebars', handlebars({default: 'main'}));
     app.set('view engine', 'handlebars');
+  //Mongoose
+  mongoose.Promise = global.Promise;
+    mongoose.connect("mongodb://localhost/blogapp").then(()=>{
+      console.log("Conectado ao banco");
+    }).catch((err)=>{
+      console.log("Erro ao se conectar: "+ err)
+    })
   // public
     app.use(express.static(path.join(__dirname,"public")))  
 
