@@ -5,10 +5,25 @@ const bodyParser = require('body-parser');
 const admin      = require('./routes/admin'); //Aqui eu estou importanto
 const mongoose   = require('mongoose');
 const path       = require('path');
+const session    = require('express-session')
+const flash      = require('connect-flash')
 
 const app = express();
 
 //configuracoes
+   // Sessão
+    app.use(session({
+      secret:"curiosidade",
+      resave: true,
+      saveUninitialized:true
+    }))
+    app.use(flash())
+  //configurar o Middleware
+    app.use((req, res, next)=>{
+      res.locals.success_msg = req.flash("success_msg")
+      res.locals.error_msg   = req.flash("error_msgg")
+      next() // nao esquecer desta parte senao o servidor para
+    })  
   //configurar o body-parser
     app.use(bodyParser.urlencoded({extended:true}));
     app.use(bodyParser.json());
