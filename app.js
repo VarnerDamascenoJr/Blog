@@ -1,51 +1,50 @@
-// carregando os modulos da minha aplicacao
-const express    = require('express');
-const handlebars = require('express-handlebars');
-const bodyParser = require('body-parser');
-const admin      = require('./routes/admin'); //Aqui eu estou importanto
-const mongoose   = require('mongoose');
-const path       = require('path');
+//Carregando módulos
+const express    = require('express')
+const handlebars = require('express-handlebars')
+const bodyParser = require('body-parser')
+const path       = require('path')
 const session    = require('express-session')
 const flash      = require('connect-flash')
 
-const app = express();
+const app = express()
+const admin = require('./routes/admin')
+const mongoose = require('mongoose')
 
-//configuracoes
-   // Sessão
-    app.use(session({
-      secret:"curiosidade",
-      resave: true,
-      saveUninitialized:true
-    }))
-    app.use(flash())
-  //configurar o Middleware
-    app.use((req, res, next)=>{
-      res.locals.success_msg = req.flash("success_msg")
-      res.locals.error_msg   = req.flash("error_msgg")
-      next() // nao esquecer desta parte senao o servidor para
-    })  
-  //configurar o body-parser
-    app.use(bodyParser.urlencoded({extended:true}));
-    app.use(bodyParser.json());
-  //configurar o handlebars
-    app.engine('handlebars', handlebars({default: 'main'}));
-    app.set('view engine', 'handlebars');
+//Configurações
+   //Sessão
+     app.use(session({
+       secret:"Meu blog",
+       resave: true,
+       saveUninitialized: true
+     }))
+     app.use(flash())
+   //Middleware
+     app.use((req, res, next)=>{
+       //Agora criarei variáveis globais e que eu posso acessá-las em qualquer parte da minha aplicação
+       res.locals.success_msg = req.flash("success_msg")  // Na primeira eu farei que seja exibida uma mensagem de cadastro bem sucedido
+       res.locals.error_msg   = req.flash("error_msg")   //Aqui farei uma mensagem de erro
+      next()
+     })
+  //Body parser
+     app.use(bodyParser.urlencoded({extended : true}))
+     app.use(bodyParser.json())
+  //Handlebars
+     app.engine('handlebars', handlebars({defaultLayout: 'main'}))
+     app.set('view engine', 'handlebars')
   //Mongoose
-  mongoose.Promise = global.Promise;
-    mongoose.connect("mongodb://localhost/blogapp").then(()=>{
-      console.log("Conectado ao banco");
-    }).catch((err)=>{
-      console.log("Erro ao se conectar: "+ err)
-    })
-  // public
-    app.use(express.static(path.join(__dirname,"public")))  
-
-//rotas
-app.use('/admin', admin);
-
-
-//para conectar ao servidor
-const porta = 8081
-app.listen(porta,()=>{
-  console.log("Servidor funcionando!");
-});
+     mongoose.Promisse = global.Promisse;
+     mongoose.connect("mongodb://localhost/blogapp").then(()=>{
+       console.log("Conectado ao banco")
+     }).catch((err)=>{
+       console.log("Nao conectado: "+err)
+     })
+  //Public
+     // E aqui estamos informando que a pasta que contém todos os nossos arquivos estáticos é pasta public
+     app.use(express.static(path.join(__dirname,"public"))) // Aqui há a comunicação para que o express tenha conhecimento da nossa página estática
+//Rotas
+     app.use('/admin', admin) //para importar a rota no admin e fazê-la rodas no servidor
+//Outros
+const PORT = 8081
+app.listen(PORT,()=>{
+  console.log("Servidor funcionando!")
+})
