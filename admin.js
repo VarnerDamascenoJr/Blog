@@ -1,52 +1,59 @@
-const express = require('express');
-const router  = express.Router();
-const mongoose = require('mongoose');
-require("../models/Categoria")
-const Categoria = mongoose.model("categoria")
-
-
+const express = require('express')
+const router = express.Router()
+const mongoose = require('mongoose')
+require('../models/Categoria')
+const Categoria = mongoose.model("categorias")
+//Aqui embaixo eu declaro todas as rotas das quais necessito.
 
 router.get('/',(req, res)=>{
-  res.render("admin/index");
-});
-
+  res.render('admin/index')
+})
 router.get('/posts',(req, res)=>{
-  res.render("pagina de post")
-});
-router.get('/categorias',(req, res)=>{
-  res.get("Ola caralhinhi")
-})
-router.get('/categorias/add', (req, res)=>{
-  res.render('addcategoria')
-}
-router.post('/categoria/nova', (req, res)=>{
-  
-    var erros = []
-    if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null){
-      erros.push({nome:"nome invalido"})
-    }
-    if(!req.body.slug || req.body.slug == undefined || req.body.slug == null){
-      erros.push({texto:"Slug invalido"})
-    }
-    if(req.body.nome.length < 2){
-      erros.push({texto:"Nome da categoria muito pequeno"})
-    }
-    if(erros.length >0){
-      res.render("admin/addcategorias", {erros:erros})
-    }else{
-      const novaCategoria = {
-        nome: req.body.nome,
-        slug: req.body.slug
-      }
-  
-      new Categoria(novaCategoria).save().then(()=>{
-        req.flash("success_msg","categoria adicionada com sucesso")
-        res.redirect("/admin/categorias")
-      }).catch((err)=>{
-        req.flash("error_msg", "tente novamente")
-        console.log("Erro ao salvar: "+err);
-      })
-    }
+  res.send('Pagina de posts')
 })
 
-module.exports = router;
+router.get('/categorias',(req, res)=>{
+  Categoria.find().sort({date:'desc'}).then((categorias)=>{
+    res.render('admin/categorias', {categorias:categorias})
+  }).catch((err)=>{
+    req.flash("error_msg", "Houve um erro ao listar as categorias")
+    res.redirect("/admin")
+  })
+})
+
+router.get('/categorias/add',(req, res)=>{
+  res.render('admin/addcategoria')
+})
+router.post('/categorias/nova', (req, res)=>{
+  //Aqui será feita a validação manual
+  var erros = []
+
+  if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null){
+    erros.push({texto:"Nome inválido"})
+  }
+  if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null){
+    erros.push({texto:"Slug inválido "})
+  }
+  if(req.body.nome.length < 2){
+    erros.push({texto:"Nome muito pequeno"})
+  }
+  if(erros.length >0){
+    res.render("admin/addcategoria",{erros: erros})
+  }
+
+  const novaCategoria = {  // fará referência as npme e slug já criados
+    nome: req.body.nome,
+    slug: req.body.slug
+  }
+  new Categoria(novaCategoria).save().then(()=>{
+    req.flash("Categoria criada com sucesso!")
+    res.redirect("/admin/categorias")
+  }).catch((err)=>{
+    req.flash("error_msg", "Houve um erro ao salvar")  //mensagem que será enviada a partir de uma partial
+    console.log("Não foi possível adicionar: "+err)
+  })
+
+})
+
+
+module.exports = router //esta parte para exportar o router
