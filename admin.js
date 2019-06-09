@@ -54,6 +54,37 @@ router.post('/categorias/nova', (req, res)=>{
   })
 
 })
+//rota para configuração ddos meus nomes das categorias a parir do id
+//E indo no arquivo categorias.handlebars, há lá o link para esta função else {
+// e que será pego o id dinamicamente.
 
+router.get('/categorias/edit/:id',(req, res)=>{
+//neste caso, o edit funcionará pois pegará o id específico que eu quero usar
+Categoria.findOne({_id:req.params.id}).then((categoria)=>{
+  res.render("admin/editcategorias",{categoria:categoria})
+}).cath((err)=>{
+  req.flash("error_msg","Esta categoria não existe")
+  req.redirect("/admin/categorias")
+})
+})
+router.post('/categorias/edit', (req, res)=>{
+  //ainda falta o sistema de validação
+  Categoria.findOne({_id: req.body.id}).then((categoria)=>{
+    categoria.nome  = req.body.nome //pegará o nome que virá do formulário de edirção
+    categoria.slug  = req.body.slug
+
+    categoria.save().then(()=>{
+      req.flash("success_msg", "categoria editada com sucesso")
+      res.redirect("/admin/categorias")
+    }).catch((err)=>{
+      req.flah("error_msg" ,"Houve erro interno")
+      res.redirect("/admin/categorias")
+    })
+
+  }).catch((err)=>{
+    req.flah("error_msg","Houve um erro ao editar a categoria")
+    req.redirect("/admin/categorias")
+  })
+})
 
 module.exports = router //esta parte para exportar o router
