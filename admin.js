@@ -86,5 +86,14 @@ router.post('/categorias/edit', (req, res)=>{
     req.redirect("/admin/categorias")
   })
 })
+router.post('/categorias/deletar', (req, res)=>{
+   Categoria.remove({_id: req.body.id}).then(()=>{
+       req.flash("success_msg", "Categoria deletada com sucesso")
+     res.redirect('/admin/categorias')
+   }).catch((err)=>{
+     req.flash("error_msg", "erro ao deletar")
+     res.redirec('/admin/categorias')
+   })
+})
 
 module.exports = router //esta parte para exportar o router
