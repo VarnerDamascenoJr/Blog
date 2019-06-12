@@ -95,5 +95,7 @@ router.post('/categorias/deletar', (req, res)=>{
      res.redirec('/admin/categorias')
    })
 })
-
+router.get('/postagens', (req, res)=>{
+    res.render("admin/postagens")
+})
 module.exports = router //esta parte para exportar o router
