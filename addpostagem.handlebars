@@ -10,8 +10,16 @@
          <input type="text" name="descricao" class="form-control" value="">
          <label for="conteudo">Conteúdo</label>
          <textarea name="conteudo" class="form-control" rows="8" cols="80"></textarea>
+         <label for="categoria">Categoria:</label>
+         <select class="custom-select" name="categoria">
+           {{#each categorias}}
+               <option value="{{_id}}">{{nome}}</option>
+           {{else}}
+               <option value="">Nenhuma categoria registrada</option>
+           {{/each}}
+
+         </select>
          <button class="btn btn-success mt-2" type="submit" name="button">Criar Postagem</button>
      </form>
   </div>
 </div>
-
