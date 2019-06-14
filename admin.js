@@ -108,5 +108,9 @@ router.get('/postagens/add',(req, res)=>{
   })
 })
 
+router.get('/postagens/nova', (req, res)={
+
+})
+
 
 module.exports = router //esta parte para exportar o router
