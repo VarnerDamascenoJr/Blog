@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
-require('../models/Categoria')
-const Categoria = mongoose.model("categorias")
+require('../models/Categoria') //Aqui será carregado o model Categoria para que possa ser usado no banco
+const Categoria = mongoose.model("categorias")//Aqui será instanciado
+require('../models//Postagem') //Aqui será carregado o model para ser usado no banco
+const Postagem  = mongoose.model("postagens")//Aqui será instanciado o model
 //Aqui embaixo eu declaro todas as rotas das quais necessito.
 
 router.get('/',(req, res)=>{
@@ -102,7 +104,13 @@ router.post("/categorias/deletar", (req, res)=>{
 })
 
 router.get("/postagens",(req, res)=>{
+  Postagem.find().populate("categoria").sort({data:"desc"}).then((postagens)=>{
     res.render("admin/postagens")
+  }).catch((err)=>{
+    req.flash("error_msg","Houve um erro ao tentar listar as postagens")
+    res.redirect("/admin/")
+  })
+
 })
 router.get("/postagens/add", (req, res)=>{
   Categoria.find().then((categorias)=>{
@@ -111,5 +119,34 @@ router.get("/postagens/add", (req, res)=>{
     req.flash("error_msg","Houve um erro ao carregar o formulário")
     res.redirect("/admin")
   })
+})
+
+router.post("/postagens/nova",(req, res)=>{
+  //tenho que fazer a validação ainda
+  var erros = []
+
+  if(req.body.categoria = "0"){
+    erros.push({texto:"Categoria inválida, registre"})
+  }
+  if(erros.length > 0){
+    res.render("admin/addpostagem",{erros:erros})
+  }else{
+    //criarei uma nova postagem para que receba os dados fornecidos pelo formulário
+   const novaPostagem = {
+     titulo:req.boby.titulo,
+     descricao: req.body.descricao,
+     slug: req.body.slug,
+     conteudo: req.body.conteudo,
+     categoria:req.body.categoria
+   }
+   //Aqui será salvo
+   new Postagem(novaPostagem).save().then(()=>{
+     req.flash("success_msg","Postagem adicionada com sucesso!!!")
+     res.redirect("/admin/postagens")
+   }).catch((err)=>{
+     req.flash("error_msg","Houve um erro ao adicionar uma nova postagem")
+     res.redirect("/admin/postagens")
+   })
+  }
 })
 module.exports = router //esta parte para exportar o router
