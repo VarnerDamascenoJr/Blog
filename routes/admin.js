@@ -13,6 +13,7 @@ router.get('/posts',(req, res)=>{
 })
 
 router.get('/categorias',(req, res)=>{
+  //aqui para listar os post por data
   Categoria.find().sort({date:'desc'}).then((categorias)=>{
     res.render('admin/categorias', {categorias:categorias})
   }).catch((err)=>{
@@ -51,9 +52,9 @@ router.post('/categorias/nova', (req, res)=>{
   }).catch((err)=>{
     req.flash("error_msg", "Houve um erro ao salvar")  //mensagem que será enviada a partir de uma partial
     console.log("Não foi possível adicionar: "+err)
+    })
   })
 
-})
 //rota para configuração ddos meus nomes das categorias a parir do id
 //E indo no arquivo categorias.handlebars, há lá o link para esta função else {
 // e que será pego o id dinamicamente.
@@ -62,7 +63,7 @@ router.get('/categorias/edit/:id',(req, res)=>{
 //neste caso, o edit funcionará pois pegará o id específico que eu quero usar
 Categoria.findOne({_id:req.params.id}).then((categoria)=>{
   res.render("admin/editcategorias",{categoria:categoria})
-}).cath((err)=>{
+}).catch((err)=>{
   req.flash("error_msg","Esta categoria não existe")
   req.redirect("/admin/categorias")
 })
@@ -77,40 +78,38 @@ router.post('/categorias/edit', (req, res)=>{
       req.flash("success_msg", "categoria editada com sucesso")
       res.redirect("/admin/categorias")
     }).catch((err)=>{
-      req.flah("error_msg" ,"Houve erro interno")
+      req.flash("error_msg" ,"Houve erro interno")
       res.redirect("/admin/categorias")
     })
 
   }).catch((err)=>{
-    req.flah("error_msg","Houve um erro ao editar a categoria")
+    req.flash("error_msg","Houve um erro ao editar a categoria")
     req.redirect("/admin/categorias")
   })
 })
-router.post('/categorias/deletar', (req, res)=>{
-   Categoria.remove({_id: req.body.id}).then(()=>{
-       req.flash("success_msg", "Categoria deletada com sucesso")
-     res.redirect('/admin/categorias')
-   }).catch((err)=>{
-     req.flash("error_msg", "erro ao deletar")
-     res.redirec('/admin/categorias')
-   })
-})
-router.get('/postagens', (req, res)=>{
-    res.render("admin/postagens")
-})
 
-router.get('/postagens/add',(req, res)=>{
-  Categoria.find().then((categorias)=>{
-    res.render("admin/addpostagem",{categoria:categorias})
+router.post("/categorias/deletar", (req, res)=>{
+  //que pegará do formulário de categorias e removerá
+  //o post selecionado a partir do botão, pois será pego o id
+  //da postagem
+  Categoria.remove({_id: req.body.id}).then(()=>{
+    req.flash("success_msg", "Categoria deletada com sucesso")
+    res.redirect("/admin/categorias")
   }).catch((err)=>{
-    req.flah("error_msg", "Houve um erro ao carregar o formulario")
-    res.redirect("/admin")
+    req.flash("error_msg","Falha ao deletar a postagem")
+    res.redirect("/admin/categorias")
   })
 })
 
-router.get('/postagens/nova', (req, res)={
-
+router.get("/postagens",(req, res)=>{
+    res.render("admin/postagens")
 })
-
-
+router.get("/postagens/add", (req, res)=>{
+  Categoria.find().then((categorias)=>{
+    res.render("admin/addpostagens",{categorias:categorias}) //passa todas as categorias dentro da view de postagem
+  }).catch((err)=>{
+    req.flash("error_msg","Houve um erro ao carregar o formulário")
+    res.redirect("/admin")
+  })
+})
 module.exports = router //esta parte para exportar o router
