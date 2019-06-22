@@ -1,25 +1,26 @@
 <div class="card">
-  <div class="card-body">
-    <h4>Nova Postagem</h4>
-     <form class="" action="/admin/postagens/nova" method="POST">
-         <label for="titulo">Título:</label>
-         <input type="text" name="titulo" class="form-control">
-         <label for="slug">Slug:</label>
+    <div class="card-body">
+      <h4>Nova Postagem:</h4>
+      <form class="" action="index.html" method="post">
+        <label for="titulo" >Titulo:</label>
+         <input type="text" class="form-control" name="titulo" value="">
+        <label for="slug" >Slug:</label>
          <input type="text" name="slug" class="form-control" value="">
-         <label for="descrecao">Descrição</label>
+        <label for="descricao">Descrição:</label>
          <input type="text" name="descricao" class="form-control" value="">
-         <label for="conteudo">Conteúdo</label>
+        <label for="conteudo">Conteúdo:</label>
          <textarea name="conteudo" class="form-control" rows="8" cols="80"></textarea>
-         <label for="categoria">Categoria:</label>
+        <label for="categoria">Categoria:</label>
          <select class="custom-select" name="categoria">
            {{#each categorias}}
-               <option value="{{_id}}">{{nome}}</option>
+           <option value="{{_id}}">{{_nome}}</option>
            {{else}}
-               <option value="">Nenhuma categoria registrada</option>
+           <option value="0">Nenhuma categoria registrada</option>
            {{/each}}
-
          </select>
-         <button class="btn btn-success mt-2" type="submit" name="button">Criar Postagem</button>
-     </form>
-  </div>
+         <button type="submit" name="button" class="btn btn-success mt-3">Criar Postagem</button>
+
+      </form>
+
+    </div>
 </div>
