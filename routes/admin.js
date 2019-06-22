@@ -149,4 +149,8 @@ router.post("/postagens/nova",(req, res)=>{
    })
   }
 })
+//rota para edição de postagem
+router.get("/postagens/edit/:edit", (req, res)=>{
+  res.render("admin/editpostagens")
+})
 module.exports = router //esta parte para exportar o router
