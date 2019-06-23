@@ -150,7 +150,47 @@ router.post("/postagens/nova",(req, res)=>{
   }
 })
 //rota para edição de postagem
-router.get("/postagens/edit/:edit", (req, res)=>{
-  res.render("admin/editpostagens")
+router.get("/postagens/edit/:id", (req, res)=>{
+  //aquui estou fazendo duas buscas ao mesmo tempo.
+  Postagem.findOne({_id: req.params.id}).then((postagem)=>{
+    Categoria.find().then((categoria)={
+      res.render("admin/editpostagens",{categorias:categorias, postagem:postagem})
+         }).catch((err)=>{
+
+      req.flash("error_msg","Não foi possível")})
+      res.redirect("/admin/postagens")
+  }).catch((err)=>{
+    req.flash("error_msg", "Houve um erro")
+    res.redirect("/admin/postagens")
+  })
+
+})
+
+//criarei uma rota que irá atualizar os dados da  Postagem
+router.post("/postagem/edit", (req, res)=>{
+  //necessário que eu faça a validação no final
+  //Aqui uso o campo id como boby porque no edicao de postagens o name está recebendo o id
+  Postagem.findOne({_id: req.boby.id})then((postagem)=>{
+
+       postagem.titulo = req.boby.titulo
+       postagem.slug   = req.body.slug
+       postagem.descricao = req.body.descricao
+       postagem.conteudo = req.body.conteudo
+       postagem.categoria = req.body.categoria
+
+       postagem.save().then(()=>{
+         req.flash("success_msg","Postagem editada com sucesso")
+         res.redirect("/admin/postagens")
+       }).catch((err)=>{
+         req.flash("error_msg", "Erro interno");
+         res.redirect("/admin/postagens")
+
+       })
+
+  }).catch((err)=>{
+    req.flash("error_msg", "Houve um erro")
+    res.redirect("/admin/postagens")
+  })
+
 })
 module.exports = router //esta parte para exportar o router
