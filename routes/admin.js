@@ -193,4 +193,15 @@ router.post("/postagem/edit", (req, res)=>{
   })
 
 })
+//rota para deletar postagem, embora menos segura por ser uma rota get
+router.get("/postagens/deletar/:id", (req, res)=>{
+  Postagem.remove({_id: req.params.id}).then(()=>{
+    req.flash("success_msg","Postagem deletada com sucesso")
+    res.redirect("/admin/postagens")
+
+  }).catch((err)=>{
+    req.flash("error_msg","Houve m erro ao tentar deletar a postagem")
+    res.redirect("/admin/postagens")
+  })
+})
 module.exports = router //esta parte para exportar o router
