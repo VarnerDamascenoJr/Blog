@@ -1,1 +1,21 @@
-<button class="btn btn-success">teste</button>
+
+
+<div class="jumbotron">
+  <h1 class="display-4">Bem-vindo ao Blog</h1>
+  <p class="lead">Este é um simples componente jumbotron para chamar mais atenção a um determinado conteúdo ou informação.</p>
+  <hr class="my-4">
+  <p>Ele usa classes utilitárias para tipografia e espaçamento de conteúdo, dentro do maior container.</p>
+  <a class="btn btn-primary btn-lg" href="#" role="button">Crie uma conta</a>
+</div>
+<hr>
+<h2>Postagens recentes:</h2>
+<div class="card">
+  {{#each postagens}}
+  <div class="card-body">
+    <h3>{{tituto}}</h3>
+    <p>{{descricao}}</p>
+  </div>
+</div>
+{{else}}
+<h5>Nenhuma postagem</h5>
+{{/each}}
