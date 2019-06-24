@@ -9,6 +9,8 @@ const flash      = require('connect-flash')
 const app = express()
 const admin = require('./routes/admin')
 const mongoose = require('mongoose')
+require("./model/Postagem")
+const Postagem = mongoose.model("postagens")
 
 //Configurações
    //Sessão
@@ -42,6 +44,17 @@ const mongoose = require('mongoose')
      // E aqui estamos informando que a pasta que contém todos os nossos arquivos estáticos é pasta public
      app.use(express.static(path.join(__dirname,"public"))) // Aqui há a comunicação para que o express tenha conhecimento da nossa página estática
 //Rotas
+     app.get("/", (req, res)=>{
+       Postagem.find().populate("categoria").sort({data:'desc'}).then((postagens)=>{
+         res.render("index",{postagens:postagens})
+       }).catch((err)=>{
+         req.flash("error_msg","Houve um erro interno")
+         res.redirect("/404")
+       })
+     })
+     app.get("/404",(req, res)=>{
+       res.send('Erro 404')
+     })
      app.use('/admin', admin) //para importar a rota no admin e fazê-la rodas no servidor
 //Outros
 const PORT = 8081
