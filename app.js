@@ -13,7 +13,7 @@ require("./model/Postagem")
 const Postagem = mongoose.model("postagens")
 require("./models/Categoria")
 const Categoria = mongoose.model("categorias")
-
+const usuarios = require('./routes/usuario')
 //Configurações
    //Sessão
      app.use(session({
@@ -99,6 +99,7 @@ const Categoria = mongoose.model("categorias")
        })
      })
      app.use('/admin', admin) //para importar a rota no admin e fazê-la rodas no servidor
+     app.use('/usuarios', usuarios)
 //Outros
 const PORT = 8081
 app.listen(PORT,()=>{
