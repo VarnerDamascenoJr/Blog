@@ -14,6 +14,8 @@ const Postagem = mongoose.model("postagens")
 require("./models/Categoria")
 const Categoria = mongoose.model("categorias")
 const usuarios = require('./routes/usuario')
+const passport = require('passport')
+require('/config/auth')(passport)
 //Configurações
    //Sessão
      app.use(session({
@@ -21,6 +23,10 @@ const usuarios = require('./routes/usuario')
        resave: true,
        saveUninitialized: true
      }))
+     //deve ficar nesta ordem
+     app.use(passport.initialize())
+     app.use(passport.session())
+
      app.use(flash())
    //Middleware
      app.use((req, res, next)=>{
