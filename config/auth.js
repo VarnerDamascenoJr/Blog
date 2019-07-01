@@ -7,14 +7,14 @@ require('../models/Usuario')
 const Usuario = mongoose.model("usuarios")
 
 model.exports = funcion(passport){
-  passport.use(new localStrategy({usernameFiel:'email'}, (email, senha, done)=>{
+  passport.use(new localStrategy({usernameFiel:'email', passwordField:senha}, (email, senha, done)=>{
     Usuario.findOne({email: email}).then((usuario)=>{
       if (usuario) {
         return done(null, false, {message:"Esta conta não existe"})
       }
       bcrypt.campare(senha, usuario.senha, (erro, batem)=>{
         if (batem) {
-          return done(null, user)
+          return done(null, usuario)
         }else {
           return done(null, false, {message:"Senha incorreta"})
         }
@@ -27,8 +27,8 @@ model.exports = funcion(passport){
   })
 
   passport.deserializeUser((id, done)=>{
-    User.findById(id, (err, usuario)=>{
-      done(err, user)
+    usuario.findById(id, (err, usuario)=>{
+      done(err, usuario)
     })
   })
 }
