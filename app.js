@@ -33,6 +33,7 @@ require('/config/auth')(passport)
        //Agora criarei variáveis globais e que eu posso acessá-las em qualquer parte da minha aplicação
        res.locals.success_msg = req.flash("success_msg")  // Na primeira eu farei que seja exibida uma mensagem de cadastro bem sucedido
        res.locals.error_msg   = req.flash("error_msg")   //Aqui farei uma mensagem de erro
+       res.locals.error = req.flash("error") //criação de uma variável local para autenticação
       next()
      })
   //Body parser
