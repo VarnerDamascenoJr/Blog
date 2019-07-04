@@ -34,6 +34,7 @@ require('/config/auth')(passport)
        res.locals.success_msg = req.flash("success_msg")  // Na primeira eu farei que seja exibida uma mensagem de cadastro bem sucedido
        res.locals.error_msg   = req.flash("error_msg")   //Aqui farei uma mensagem de erro
        res.locals.error = req.flash("error") //criação de uma variável local para autenticação
+       res.locals.user == req.user || null; //armazenrá as variaáveis do usuário e caso não exista será passado o valor null
       next()
      })
   //Body parser
