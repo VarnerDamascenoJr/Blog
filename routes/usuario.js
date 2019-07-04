@@ -43,7 +43,8 @@ router.post("/registro",(req, res)=>{
         cont novousuario = new Usuario({
           nome: req.body.nome,
           email: req.body.email,
-          senha: req.body.senha
+          senha: req.body.senha,
+        //uso isso aqui para criar um usuário administrador  eAdmin = 1
         })
 
         //nao posso salvar o objeto antes de encriptar a senha.
