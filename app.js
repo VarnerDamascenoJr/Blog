@@ -16,7 +16,6 @@ const Categoria = mongoose.model("categorias")
 const usuarios = require('./routes/usuario')
 const passport = require('passport')
 require('/config/auth')(passport)
-
 //Configurações
    //Sessão
      app.use(session({
@@ -35,7 +34,7 @@ require('/config/auth')(passport)
        res.locals.success_msg = req.flash("success_msg")  // Na primeira eu farei que seja exibida uma mensagem de cadastro bem sucedido
        res.locals.error_msg   = req.flash("error_msg")   //Aqui farei uma mensagem de erro
        res.locals.error = req.flash("error") //criação de uma variável local para autenticação
-       res.locals.user == req.user || null; //armazenrá as variaáveis do usuário e caso não exista será passado o valor null
+       res.locals.user == req.user || null; //armazenrá as variáveis do usuário e caso não exista será passado o valor null
       next()
      })
   //Body parser
@@ -73,7 +72,7 @@ require('/config/auth')(passport)
            res.redirect("/")
          }
        }).catch((err)=>{
-         req.flash("error_msg","Houve um erro interno.")
+         req.flash("error_msg","Houve um erro")
          res.redirect("/")
        })
      })
