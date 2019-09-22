@@ -73,7 +73,7 @@ require('/config/auth')(passport)
            res.redirect("/")
          }
        }).catch((err)=>{
-         req.flash("error_msg","Houve um erro")
+         req.flash("error_msg","Houve um erro interno.")
          res.redirect("/")
        })
      })
