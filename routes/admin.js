@@ -7,6 +7,7 @@ require('../models//Postagem') //Aqui será carregado o model para ser usado no 
 const Postagem  = mongoose.model("postagens")//Aqui será instanciado o model
 //Aqui embaixo eu declaro todas as rotas das quais necessito.
 
+
 router.get('/',eAdmin,(req, res)=>{
   res.render('admin/index')
 })
