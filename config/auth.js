@@ -6,8 +6,8 @@ const bcrypt        = require('bcryptjs')
 require('../models/Usuario')
 const Usuario = mongoose.model("usuarios")
 
-model.exports = funcion(passport){
-  passport.use(new localStrategy({usernameFiel:'email', passwordField:senha}, (email, senha, done)=>{
+module.exports = function(passport){
+  passport.use(new localStrategy({usernameFiel:'email', passwordField:'senha'}, (email, senha, done)=>{
     Usuario.findOne({email: email}).then((usuario)=>{
       if (usuario) {
         return done(null, false, {message:"Esta conta não existe"})
