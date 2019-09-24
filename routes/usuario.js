@@ -40,33 +40,39 @@ router.post("/registro",(req, res)=>{
         req.flash("error_msg","Já existe uma conta com este email no sistema.")
         res.redirect("usuarios/registro")
       }else {
-        cont novousuario = new Usuario({
+        const novousuario = new Usuario({
           nome: req.body.nome,
           email: req.body.email,
           senha: req.body.senha,
         //uso isso aqui para criar um usuário administrador  eAdmin = 1
         })
-
+ 
         //nao posso salvar o objeto antes de encriptar a senha.
         //Assim, irei encriptar para dar maior segurança no trato com a senha
         bcrypt.genSalt(10, (erro, salt)=>{
           bcrypt.hash(novousuario.senha, salt, (erro, hash)=>{
-            if(erro){req.flash("error_msg","Houve um erro ao salvar") res.redirect("/")}
+            if(erro){
+              req.flash("error_msg","Houve um erro ao salvar") 
+              req.redirect("/")
+            }
             //Aqui pegará a nova senha
             novousuario.senha = hash
             novousuario.save().then(()=>{
-              req.flash("success_msg", "Salvo com sucesso") res.redirect("/")
+              req.flash("success_msg", "Salvo com sucesso")
+              res.redirect("/")
             }).catch((err)=>{
-              req.flash("error_msg"," Houve um erro ao criar") res.redirect("/usuarios/registro")
+              req.flash("error_msg"," Houve um erro ao criar")
+              res.redirect("/usuarios/registro")
             })
 
-          })//funcao com três parâmetros
+          })
 
         })
       }
-    }).catch((err)=>{ req.flash("error_msg","Houve um erro interno") res.redirect("/")})
-  }//fim else
-})
+    }).catch((err)=>{ req.flash("error_msg","Houve um erro interno") 
+       res.redirect("/")})
+  }//fim else*/
+})//fim method post
 
 router.get("/login", (req, res)=>{
   res.render("usuarios/login")
@@ -79,4 +85,4 @@ router.post("/login", (req, res, next)=>{
      failureRedirect:true
    })(req, res, next)
 })
-model.exports = router
+module.exports = router
