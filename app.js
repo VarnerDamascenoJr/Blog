@@ -9,15 +9,13 @@ const flash      = require('connect-flash')
 const app = express()
 const admin = require('./routes/admin')
 const mongoose = require('mongoose')
-require("./model/Postagem")
+require("./models/Postagem")
 const Postagem = mongoose.model("postagens")
 require("./models/Categoria")
 const Categoria = mongoose.model("categorias")
 const usuarios = require('./routes/usuario')
 const passport = require('passport')
-require('/config/auth')(passport)
-
-
+require('./config/auth')(passport)
 //Configurações
    //Sessão
      app.use(session({
