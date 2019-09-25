@@ -7,10 +7,10 @@ const bcrypt = require('bcryptjs')
 const passport = require('passport')
 
 router.get("/registro", (req, res)=>{
-  res.render("usuarios/registro")
+  res.render("./usuarios/registro")
 })
 
-router.post("/registro",(req, res)=>{
+router.post("/registro/novo",(req, res)=>{
   var erros = []
 
   if(!req.boby.nome || typeof req.body.nome == undefined || req.boby.nome == null){
@@ -30,7 +30,7 @@ router.post("/registro",(req, res)=>{
     erros.push({texto:"Senhas diferentes, tente novamente."})
   }
   if(erros.length > 0){
-    res.render("usuarios/registro",{erros:erros})
+    res.render("/usuarios/registro",{erros:erros})
 
   }else {
     //verificar se o usuário que está tentando se cadastrar, se o email dele já existe
@@ -38,12 +38,13 @@ router.post("/registro",(req, res)=>{
     Usuario.findOne({email: req.body.email}).then((usuario)=>{
       if (usuario) {
         req.flash("error_msg","Já existe uma conta com este email no sistema.")
-        res.redirect("usuarios/registro")
+        res.redirect("/usuarios/registro")
       }else {
         const novousuario = new Usuario({
           nome: req.body.nome,
           email: req.body.email,
           senha: req.body.senha,
+          eAdmin: 1
         //uso isso aqui para criar um usuário administrador  eAdmin = 1
         })
  
@@ -84,5 +85,11 @@ router.post("/login", (req, res, next)=>{
      failureRedirect:"/usuarios/login",
      failureRedirect:true
    })(req, res, next)
+})
+
+router.get('/logout', (req, res)=>{
+  req.logout()
+  req.flash("success_msg", "Deslogado com sucesso.")
+  res.redirect("/")
 })
 module.exports = router
