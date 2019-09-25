@@ -3,19 +3,20 @@ const router = express.Router()
 const mongoose = require('mongoose')
 require('../models/Categoria') //Aqui será carregado o model Categoria para que possa ser usado no banco
 const Categoria = mongoose.model("categorias")//Aqui será instanciado
-require('../models//Postagem') //Aqui será carregado o model para ser usado no banco
+require('../models/Postagem') //Aqui será carregado o model para ser usado no banco
 const Postagem  = mongoose.model("postagens")//Aqui será instanciado o model
 //Aqui embaixo eu declaro todas as rotas das quais necessito.
-
-
-router.get('/',eAdmin,(req, res)=>{
+const {eAdmin} = require('../helpers/eAdmin')
+router.get('/',(req, res)=>{
   res.render('admin/index')
 })
 router.get('/posts',(req, res)=>{
   res.send('Pagina de posts')
 })
 
-router.get('/categorias',(req, res)=>{
+
+
+router.get('/categorias',eAdmin,(req, res)=>{
   //aqui para listar os post por data
   Categoria.find().sort({date:'desc'}).then((categorias)=>{
     res.render('admin/categorias', {categorias:categorias})
@@ -25,10 +26,11 @@ router.get('/categorias',(req, res)=>{
   })
 })
 
-router.get('/categorias/add',(req, res)=>{
+router.get('/categorias/add',eAdmin,(req, res)=>{
   res.render('admin/addcategoria')
 })
-router.post('/categorias/nova', (req, res)=>{
+
+router.post('/categorias/nova',eAdmin, (req, res)=>{
   //Aqui será feita a validação manual
   var erros = []
 
@@ -62,7 +64,7 @@ router.post('/categorias/nova', (req, res)=>{
 //E indo no arquivo categorias.handlebars, há lá o link para esta função else {
 // e que será pego o id dinamicamente.
 
-router.get('/categorias/edit/:id',(req, res)=>{
+router.get('/categorias/edit/:id',eAdmin,(req, res)=>{
 //neste caso, o edit funcionará pois pegará o id específico que eu quero usar
 Categoria.findOne({_id:req.params.id}).then((categoria)=>{
   res.render("admin/editcategorias",{categoria:categoria})
@@ -71,7 +73,7 @@ Categoria.findOne({_id:req.params.id}).then((categoria)=>{
   req.redirect("/admin/categorias")
 })
 })
-router.post('/categorias/edit', (req, res)=>{
+router.post('/categorias/edit',eAdmin, (req, res)=>{
   //ainda falta o sistema de validação
   Categoria.findOne({_id: req.body.id}).then((categoria)=>{
     categoria.nome  = req.body.nome //pegará o nome que virá do formulário de edirção
@@ -91,7 +93,7 @@ router.post('/categorias/edit', (req, res)=>{
   })
 })
 
-router.post("/categorias/deletar", (req, res)=>{
+router.post("/categorias/deletar", eAdmin,(req, res)=>{
   //que pegará do formulário de categorias e removerá
   //o post selecionado a partir do botão, pois será pego o id
   //da postagem
@@ -104,7 +106,7 @@ router.post("/categorias/deletar", (req, res)=>{
   })
 })
 
-router.get("/postagens",(req, res)=>{
+router.get("/postagens",eAdmin,(req, res)=>{
   Postagem.find().populate("categoria").sort({data:"desc"}).then((postagens)=>{
     res.render("admin/postagens")
   }).catch((err)=>{
@@ -113,7 +115,7 @@ router.get("/postagens",(req, res)=>{
   })
 
 })
-router.get("/postagens/add", (req, res)=>{
+router.get("/postagens/add", eAdmin,(req, res)=>{
   Categoria.find().then((categorias)=>{
     res.render("admin/addpostagens",{categorias:categorias}) //passa todas as categorias dentro da view de postagem
   }).catch((err)=>{
@@ -122,7 +124,7 @@ router.get("/postagens/add", (req, res)=>{
   })
 })
 
-router.post("/postagens/nova",(req, res)=>{
+router.post("/postagens/nova",eAdmin,(req, res)=>{
   //tenho que fazer a validação ainda
   var erros = []
 
@@ -151,11 +153,11 @@ router.post("/postagens/nova",(req, res)=>{
   }
 })
 //rota para edição de postagem
-router.get("/postagens/edit/:id", (req, res)=>{
+router.get("/postagens/edit/:id",eAdmin, (req, res)=>{
   //aquui estou fazendo duas buscas ao mesmo tempo.
   Postagem.findOne({_id: req.params.id}).then((postagem)=>{
     Categoria.find().then((categoria)={
-      res.render("admin/editpostagens",{categorias:categorias, postagem:postagem})
+ //   res.render("/admin/editpostagens",{categorias:categorias, postagem:postagem})
          }).catch((err)=>{
 
       req.flash("error_msg","Não foi possível")})
@@ -168,10 +170,10 @@ router.get("/postagens/edit/:id", (req, res)=>{
 })
 
 //criarei uma rota que irá atualizar os dados da  Postagem
-router.post("/postagem/edit", (req, res)=>{
+router.post("/postagem/edit", eAdmin,(req, res)=>{
   //necessário que eu faça a validação no final
   //Aqui uso o campo id como boby porque no edicao de postagens o name está recebendo o id
-  Postagem.findOne({_id: req.boby.id})then((postagem)=>{
+  Postagem.findOne({_id: req.boby.id}).then((postagem)=>{
 
        postagem.titulo = req.boby.titulo
        postagem.slug   = req.body.slug
@@ -195,7 +197,7 @@ router.post("/postagem/edit", (req, res)=>{
 
 })
 //rota para deletar postagem, embora menos segura por ser uma rota get
-router.get("/postagens/deletar/:id", (req, res)=>{
+router.get("/postagens/deletar/:id",eAdmin, (req, res)=>{
   Postagem.remove({_id: req.params.id}).then(()=>{
     req.flash("success_msg","Postagem deletada com sucesso")
     res.redirect("/admin/postagens")
