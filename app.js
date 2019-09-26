@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const path       = require('path')
 const session    = require('express-session')
 const flash      = require('connect-flash')
-
+//configurações internas do sistema.
 const app = express()
 const admin = require('./routes/admin')
 const mongoose = require('mongoose')
